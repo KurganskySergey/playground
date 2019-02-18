@@ -1,0 +1,21 @@
+{
+    "compilerOptions": {
+        "strictNullChecks": true,
+        "checkJs": true,
+        "allowJs": true,
+        "sourceMap": true,
+        "target": "es2017",
+        "module": "commonjs",
+        "jsx": "preserve",
+        "noImplicitAny": true,
+        "types" : ["node", "jest"]
+    },
+    "include": [
+        "src/**/*",
+        "./webpack.config.ts"
+    ],
+    "exclude": [
+        "node_modules",
+        "**/*.spec.ts"
+    ]
+}

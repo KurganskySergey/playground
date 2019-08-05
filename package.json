@@ -6,9 +6,9 @@
   "license": "MIT",
   "scripts": {
     "test": "jest --config jest.config.json",
-    "watch": "webpack --watch",
-    "start": "webpack-dev-server --open --watch",
-    "build": "webpack",
+    "watch": "webpack --watch --mode development",
+    "start": "webpack-dev-server --open --watch --mode development",
+    "build": "webpack  --mode production",
     "prepush": "yarn test",
     "tslint-check": "tslint-config-prettier-check ./tslint.json",
     "lint": "tslint 'src/**/*.{ts, tsx}'"

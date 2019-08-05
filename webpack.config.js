@@ -32,10 +32,14 @@ module.exports = {
         extensions: ['.ts', '.tsx', '.js', '.jsx'],
     },
     plugins: [
-        new webpack.DefinePlugin({
-            'process.env.NODE_ENV': 'development',
-            'process.env.BABEL_ENV': 'development'
+        new webpack.EnvironmentPlugin({
+            NODE_ENV: 'development', // use 'development' unless process.env.NODE_ENV is defined
+            DEBUG: true
         }),
+        // new webpack.DefinePlugin({
+        //     'process.env.NODE_ENV': 'development',
+        //     'process.env.BABEL_ENV': 'development'
+        // }),
         new webpack.NamedModulesPlugin(),
         new webpack.HotModuleReplacementPlugin(),
         // new CleanWebpackPlugin(['dist']),
@@ -59,18 +63,11 @@ module.exports = {
                     /* Loader options go here */
                 },
             },
-            // {
-            //     test: /\.tsx?$/,
-            //     loader: 'awesome-typescript-loader',
-            // },
             {
                 test: /\.m?[jt]sx?$/,
                 exclude: /(node_modules|bower_components)/,
                 use: {
-                    loader: 'babel-loader',
-                    //   options: {
-                    // presets: ['@babel/preset-env']
-                    //   }
+                    loader: 'babel-loader'
                 }
             }
         ],

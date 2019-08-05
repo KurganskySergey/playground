@@ -1,13 +1,14 @@
-import reactDom from 'react-dom'
-import main from './src/main'
+import React from 'react'
+import ReactDOM from 'react-dom'
+import { App } from './src/main'
 
-reactDom.render(main, document.body)
+ReactDOM.render(<App />, document.getElementById('root'))
 
 // Webpack Hot Module Replacement API
 // @ts-ignore
 if (module.hot) {
 	// @ts-ignore
 	module.hot.accept('./src/main', () => {
-		reactDom.render(main)
+		ReactDOM.render(App)
 	})
 }

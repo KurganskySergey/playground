@@ -104,6 +104,6 @@ function main() {
 }
 
 // main();
-export default (): React.ReactElement => {
+export const App = (): React.ReactElement => {
 	return <canvas id="canv" width={400} height={400} />
 }

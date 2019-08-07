@@ -1,5 +1,5 @@
-import { IVector } from '../LinearAlgebra';
 import { DCanvas } from '../2d-coordinate-system';
+import { IVector } from '../LinearAlgebra';
 
 export const drawLine = (
     ctx: CanvasRenderingContext2D,

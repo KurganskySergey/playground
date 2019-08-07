@@ -1,6 +1,6 @@
 import { IVector } from './vector'
 
-export type TransformMatrix = Array<IVector>
+export type TransformMatrix = IVector[]
 
 export const shear = [[1, 0], [1, 1]]
 

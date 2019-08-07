@@ -1,4 +1,4 @@
-export type IVector = Array<number>;
+export type IVector = number[];
 
 export const addVectors = (
     [x1, y1, z1]: IVector,

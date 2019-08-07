@@ -1,10 +1,10 @@
+import { drawLine } from './draw'
 import {
-	TransformMatrix,
-	IVector,
 	applyLinearTransformation,
 	areEqualLinearTransformations,
+	IVector,
+	TransformMatrix,
 } from './LinearAlgebra'
-import { drawLine } from './draw'
 
 export class DCanvas {
 	public el: HTMLCanvasElement
@@ -35,6 +35,72 @@ export class DCanvas {
 		this.startOfCoord = [this.width / 2, this.height / 2]
 	}
 
+	// returns transformed verctor's coordinates over real canvas
+	public pointsToCoordinates(position: IVector): IVector {
+		const [x, y] = this.applyLinearTransformation(position)
+		return [
+			x * this.scale + this.startOfCoord[0],
+			// -1 because canvas coordinate goes from top to bottom while 2d in opposite direction
+			-1 * y * this.scale + this.startOfCoord[1],
+		]
+	}
+
+	public clear() {
+		this.ctx.clearRect(0, 0, this.el.width, this.el.height)
+	}
+
+	public drawGrid() {
+		this.fillBackground()
+
+		// render each line per 0.5 units on coordinate sistem
+		const xStep = this.scale / 2
+		const yStep = this.scale / 2
+
+		const maxX = Math.ceil(this.startOfCoord[0] / this.scale)
+		const maxY = Math.ceil(this.startOfCoord[1] / this.scale)
+
+		this.drawVerticalGridLines(maxX, maxY)
+		this.drawHorizontalGridLines(maxX, maxY)
+
+		drawLine(
+			this.ctx,
+			this.pointsToCoordinates([0, maxY]),
+			this.pointsToCoordinates([0, -maxY]),
+			{ color: '#fff' }
+		)
+	}
+
+	public reset() {
+		this.clear()
+		this.drawGrid()
+	}
+
+	public addTransformation(transformation: TransformMatrix) {
+		if (!this.hasTransformation(transformation)) {
+			this.linearTransformation.push(transformation)
+		}
+	}
+
+	public removeTransformation(transformation: TransformMatrix) {
+		const position = this.linearTransformation.findIndex(
+			(xTramsformation, i, arr) => {
+				return areEqualLinearTransformations(
+					xTramsformation,
+					transformation
+				)
+			}
+		)
+		this.linearTransformation.push(transformation)
+	}
+
+	public removeAllTransformations() {
+		this.linearTransformation = []
+	}
+
+	public hasTransformation(transformation: TransformMatrix): boolean {
+		return this.linearTransformation.indexOf(transformation) >= 0
+	}
+
 	private fillBackground() {
 		const w = this.el.width
 		const h = this.el.height
@@ -57,16 +123,6 @@ export class DCanvas {
 			},
 			vector
 		)
-	}
-
-	// returns transformed verctor's coordinates over real canvas
-	public pointsToCoordinates(position: IVector): IVector {
-		const [x, y] = this.applyLinearTransformation(position)
-		return [
-			x * this.scale + this.startOfCoord[0],
-			// -1 because canvas coordinate goes from top to bottom while 2d in opposite direction
-			-1 * y * this.scale + this.startOfCoord[1],
-		]
 	}
 
 	private drawHorizontalGridLines(maxX: number, maxY: number): void {
@@ -125,61 +181,5 @@ export class DCanvas {
 			this.pointsToCoordinates([0, -maxY]),
 			{ color: '#fff' }
 		)
-	}
-
-	public clear() {
-		this.ctx.clearRect(0, 0, this.el.width, this.el.height)
-	}
-
-	public drawGrid() {
-		this.fillBackground()
-
-		// render each line per 0.5 units on coordinate sistem
-		const xStep = this.scale / 2
-		const yStep = this.scale / 2
-
-		const maxX = Math.ceil(this.startOfCoord[0] / this.scale)
-		const maxY = Math.ceil(this.startOfCoord[1] / this.scale)
-
-		this.drawVerticalGridLines(maxX, maxY)
-		this.drawHorizontalGridLines(maxX, maxY)
-
-		drawLine(
-			this.ctx,
-			this.pointsToCoordinates([0, maxY]),
-			this.pointsToCoordinates([0, -maxY]),
-			{ color: '#fff' }
-		)
-	}
-
-	public reset() {
-		this.clear()
-		this.drawGrid()
-	}
-
-	public addTransformation(transformation: TransformMatrix) {
-		if (this.hasTransformation(transformation) === false) {
-			this.linearTransformation.push(transformation)
-		}
-	}
-
-	public removeTransformation(transformation: TransformMatrix) {
-		const position = this.linearTransformation.findIndex(
-			(xTramsformation, i, arr) => {
-				return areEqualLinearTransformations(
-					xTramsformation,
-					transformation
-				)
-			}
-		)
-		this.linearTransformation.push(transformation)
-	}
-
-	public removeAllTransformations() {
-		this.linearTransformation = []
-	}
-
-	public hasTransformation(transformation: TransformMatrix): boolean {
-		return this.linearTransformation.indexOf(transformation) >= 0
 	}
 }

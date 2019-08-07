@@ -4,5 +4,8 @@
         "tslint:latest",
         "tslint-react",
         "tslint-config-prettier"
-    ]
+    ],
+    "rules": {
+        "no-duplicate-imports": false
+    }
 }

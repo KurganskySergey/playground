@@ -21,8 +21,6 @@ export class DCanvas {
 	constructor(
 		el: HTMLCanvasElement,
 		scale: number = 1,
-		w?: number,
-		h?: number
 	) {
 		this.el = el
 		this.ctx = el.getContext('2d') as CanvasRenderingContext2D
@@ -30,8 +28,8 @@ export class DCanvas {
 		// 10 pixels per 1 unit on coordinate sistem * scale factor
 		this.scale = 10 * scale
 		this.isMouseDown = false
-		this.width = el.width = w || el.width
-		this.height = el.height = h || el.height
+		this.width = el.width
+		this.height = el.height
 		this.startOfCoord = [this.width / 2, this.height / 2]
 	}
 

@@ -4,81 +4,100 @@ import { DCanvas } from './2d-coordinate-system'
 import { drawVector } from './draw'
 import { rotation } from './LinearAlgebra'
 
-export const App = (): React.ReactElement => {
+function useCanvas(draw, context = '2d') {
 	const canvasRef = useRef<HTMLCanvasElement>(null)
+
 	useEffect(() => {
-		const isMouseDown = false
-		const p = 4
-		const w = 600
-		const h = 600
-		let d: DCanvas
-		const transformation = [[-3, -2], [0, 3]]
+		const ctx = canvasRef.current.getContext(context)
+		let animationFrameId = requestAnimationFrame(renderFrame)
 
-		const ANIMATION_TIME = 2000
-
-		function draw(timePased: any) {
-			const step = timePased / ANIMATION_TIME
-			d.clear()
-			render(calculateAnimationStep(transformation, step))
+		function renderFrame() {
+			animationFrameId = requestAnimationFrame(renderFrame)
+			draw(ctx)
 		}
 
-		function calculateAnimationStep([i, j]: any, step: number) {
-			return [
-				[(i[0] - 1) * step + 1, (i[1] - 0) * step + 0],
-				[(j[0] - 0) * step + 0, (j[1] - 1) * step + 1],
-			]
-		}
-
-		function animate(draw: any, duration: number) {
-			const start = performance.now()
-			requestAnimationFrame(function animate(time) {
-				// определить, сколько прошло времени с начала анимации
-				let timePassed = time - start
-
-				// возможно небольшое превышение времени, в этом случае зафиксировать конец
-				if (timePassed >= duration) {
-					timePassed = duration
-				}
-
-				// нарисовать состояние анимации в момент timePassed
-				draw(timePassed)
-
-				// если время анимации не закончилось - запланировать ещё кадр
-				if (timePassed < duration) {
-					requestAnimationFrame(animate)
-				}
-			})
-		}
-
-		function render(tr: any) {
-			d.removeAllTransformations()
-			d.addTransformation(tr)
-			d.drawGrid()
-			drawVector(d, [1, 1], 'red')
-			drawVector(d, [2, -1], 'blue')
-		}
-
-		if (canvasRef && canvasRef.current) {
-			d = new DCanvas(canvasRef.current, p, w, h)
-
-			animate(draw, ANIMATION_TIME)
-		}
-
-		return () => {
-			// cleanup
-		}
+		return () => cancelAnimationFrame(animationFrameId)
 	}, [])
+
+	return canvasRef
+}
+
+const transformation = [[1, 0], [0, 1]]
+export const App = (): React.ReactElement => {
+	const canvasRef = useCanvas(gl => {
+		debugger
+		const d = new DCanvas(canvasRef.current, 4)
+		d.removeAllTransformations()
+		d.addTransformation(transformation)
+		d.drawGrid()
+		drawVector(d, [1, 1], 'red')
+		drawVector(d, [2, -1], 'blue')
+		// gl.clearColor(0.0, 0.0, 0.0, 1.0)
+		// gl.clearDepth(1.0)
+		// gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
+	}, '2d')
 
 	return (
 		<canvas
 			ref={canvasRef}
-			id="canv"
 			width={window.innerWidth}
 			height={window.innerHeight}
 		/>
 	)
 }
 /*
+
+	const isMouseDown = false
+	const scale = 4
+	const w = 600
+	const h = 600const ANIMATION_TIME = 2000
+
+	function draw(timePased: any) {
+		const step = timePased / ANIMATION_TIME
+		d.clear()
+		render(calculateAnimationStep(transformation, step))
+	}
+
+	function calculateAnimationStep([i, j]: any, step: number) {
+		return [
+			[(i[0] - 1) * step + 1, (i[1] - 0) * step + 0],
+			[(j[0] - 0) * step + 0, (j[1] - 1) * step + 1],
+		]
+	}
+
+	function animate(draw: any, duration: number) {
+		const start = performance.now()
+		requestAnimationFrame(function animate(time) {
+			// определить, сколько прошло времени с начала анимации
+			let timePassed = time - start
+
+			// возможно небольшое превышение времени, в этом случае зафиксировать конец
+			if (timePassed >= duration) {
+				timePassed = duration
+			}
+
+			// нарисовать состояние анимации в момент timePassed
+			draw(timePassed)
+
+			// если время анимации не закончилось - запланировать ещё кадр
+			if (timePassed < duration) {
+				requestAnimationFrame(animate)
+			}
+		})
+	}
+
+	function render(tr: any) {
+		d.removeAllTransformations()
+		d.addTransformation(tr)
+		d.drawGrid()
+		drawVector(d, [1, 1], 'red')
+		drawVector(d, [2, -1], 'blue')
+	}
+
+	if (canvasRef && canvasRef.current) {
+		animate(draw, ANIMATION_TIME)
+	}
+
 	const onMousedown = (e: any) => {
 		isMouseDown = true
 		d.ctx.beginPath()

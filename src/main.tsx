@@ -1,10 +1,10 @@
 import * as React from 'react'
-import { useEffect, useRef } from 'react'
-import { DCanvas } from './2d-coordinate-system'
+import { useEffect, useRef, useState } from 'react'
+import { DCanvas } from './components/2d-coordinate-system'
 import { drawVector } from './draw'
 import { rotation } from './LinearAlgebra'
 
-function useCanvas(draw, context = '2d') {
+function useCanvas(draw, context = '2d', wSize) {
 	const canvasRef = useRef<HTMLCanvasElement>(null)
 
 	useEffect(() => {
@@ -17,33 +17,47 @@ function useCanvas(draw, context = '2d') {
 		}
 
 		return () => cancelAnimationFrame(animationFrameId)
-	}, [])
+	}, [wSize])
 
 	return canvasRef
 }
 
-const transformation = [[1, 0], [0, 1]]
-export const App = (): React.ReactElement => {
-	const canvasRef = useCanvas(gl => {
-		debugger
-		const d = new DCanvas(canvasRef.current, 4)
-		d.removeAllTransformations()
-		d.addTransformation(transformation)
-		d.drawGrid()
-		drawVector(d, [1, 1], 'red')
-		drawVector(d, [2, -1], 'blue')
-		// gl.clearColor(0.0, 0.0, 0.0, 1.0)
-		// gl.clearDepth(1.0)
-		// gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
-	}, '2d')
+function useWindow() {
+	const [state, setState] = useState<{ width: number; height: number }>({
+		width: document.documentElement.clientWidth,
+		height: document.documentElement.clientHeight,
+	})
+	const onWindowResize = () => {
+		setState({
+			width: document.documentElement.clientWidth,
+			height: document.documentElement.clientHeight,
+		})
+	}
+	useEffect(() => {
+		window.addEventListener('resize', onWindowResize, false)
+		return () => window.removeEventListener('resize', onWindowResize, false)
+	}, [])
 
-	return (
-		<canvas
-			ref={canvasRef}
-			width={window.innerWidth}
-			height={window.innerHeight}
-		/>
+	return state
+}
+
+const transformation = [[2, 1], [0, -1]]
+export const App = (): React.ReactElement => {
+	const wSize = useWindow()
+	const canvasRef = useCanvas(
+		gl => {
+			const d = new DCanvas(canvasRef.current, 4)
+			d.removeAllTransformations()
+			d.addTransformation(transformation)
+			d.drawGrid()
+			drawVector(d, [1, 1], 'red')
+			drawVector(d, [2, -1], 'blue')
+		},
+		'2d',
+		wSize
 	)
+
+	return <canvas ref={canvasRef} width={wSize.width} height={wSize.height} />
 }
 /*
 

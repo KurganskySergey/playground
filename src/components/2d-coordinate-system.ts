@@ -1,10 +1,10 @@
-import { drawLine } from './draw'
+import { drawLine } from '../draw'
 import {
 	applyLinearTransformation,
 	areEqualLinearTransformations,
 	IVector,
 	TransformMatrix,
-} from './LinearAlgebra'
+} from '../LinearAlgebra'
 
 export class DCanvas {
 	public el: HTMLCanvasElement
@@ -18,12 +18,10 @@ export class DCanvas {
 	private width: number
 	private height: number
 
-	constructor(
-		el: HTMLCanvasElement,
-		scale: number = 1,
-	) {
+	constructor(el: HTMLCanvasElement, scale: number = 1) {
 		this.el = el
 		this.ctx = el.getContext('2d') as CanvasRenderingContext2D
+		// this.ctx.translate(0.5, 0.5)
 		this.linearTransformation = []
 		// 10 pixels per 1 unit on coordinate sistem * scale factor
 		this.scale = 10 * scale

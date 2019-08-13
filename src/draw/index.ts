@@ -1,4 +1,4 @@
-import { DCanvas } from '../2d-coordinate-system';
+import { DCanvas } from '../components/2d-coordinate-system';
 import { IVector } from '../LinearAlgebra';
 
 export const drawLine = (

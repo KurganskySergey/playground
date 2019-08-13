@@ -6,7 +6,7 @@ import {
 	TransformMatrix,
 } from '../LinearAlgebra'
 
-export class DCanvas {
+export class CoordinatesSystemXY {
 	public el: HTMLCanvasElement
 	public ctx: CanvasRenderingContext2D
 	private isMouseDown: boolean
@@ -18,16 +18,11 @@ export class DCanvas {
 	private width: number
 	private height: number
 
-	constructor(el: HTMLCanvasElement, scale: number = 1) {
-		this.el = el
-		this.ctx = el.getContext('2d') as CanvasRenderingContext2D
-		// this.ctx.translate(0.5, 0.5)
+	constructor() {
 		this.linearTransformation = []
 		// 10 pixels per 1 unit on coordinate sistem * scale factor
 		this.scale = 10 * scale
 		this.isMouseDown = false
-		this.width = el.width
-		this.height = el.height
 		this.startOfCoord = [this.width / 2, this.height / 2]
 	}
 
@@ -39,10 +34,6 @@ export class DCanvas {
 			// -1 because canvas coordinate goes from top to bottom while 2d in opposite direction
 			-1 * y * this.scale + this.startOfCoord[1],
 		]
-	}
-
-	public clear() {
-		this.ctx.clearRect(0, 0, this.el.width, this.el.height)
 	}
 
 	public drawGrid() {

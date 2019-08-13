@@ -1,64 +1,14 @@
 import * as React from 'react'
-import { useEffect, useRef, useState } from 'react'
-import { DCanvas } from './components/2d-coordinate-system'
-import { drawVector } from './draw'
-import { rotation } from './LinearAlgebra'
+import { Provider } from 'react-redux'
+import { store } from './configure-store'
+import { TransformationVisualization } from './transformations-visualization/view'
 
-function useCanvas(draw, context = '2d', wSize) {
-	const canvasRef = useRef<HTMLCanvasElement>(null)
+export const App = (): React.ReactElement => (
+	<Provider store={store}>
+		<TransformationVisualization />
+	</Provider>
+)
 
-	useEffect(() => {
-		const ctx = canvasRef.current.getContext(context)
-		let animationFrameId = requestAnimationFrame(renderFrame)
-
-		function renderFrame() {
-			animationFrameId = requestAnimationFrame(renderFrame)
-			draw(ctx)
-		}
-
-		return () => cancelAnimationFrame(animationFrameId)
-	}, [wSize])
-
-	return canvasRef
-}
-
-function useWindow() {
-	const [state, setState] = useState<{ width: number; height: number }>({
-		width: document.documentElement.clientWidth,
-		height: document.documentElement.clientHeight,
-	})
-	const onWindowResize = () => {
-		setState({
-			width: document.documentElement.clientWidth,
-			height: document.documentElement.clientHeight,
-		})
-	}
-	useEffect(() => {
-		window.addEventListener('resize', onWindowResize, false)
-		return () => window.removeEventListener('resize', onWindowResize, false)
-	}, [])
-
-	return state
-}
-
-const transformation = [[2, 1], [0, -1]]
-export const App = (): React.ReactElement => {
-	const wSize = useWindow()
-	const canvasRef = useCanvas(
-		gl => {
-			const d = new DCanvas(canvasRef.current, 4)
-			d.removeAllTransformations()
-			d.addTransformation(transformation)
-			d.drawGrid()
-			drawVector(d, [1, 1], 'red')
-			drawVector(d, [2, -1], 'blue')
-		},
-		'2d',
-		wSize
-	)
-
-	return <canvas ref={canvasRef} width={wSize.width} height={wSize.height} />
-}
 /*
 
 	const isMouseDown = false

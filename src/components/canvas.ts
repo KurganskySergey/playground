@@ -14,7 +14,7 @@ class Canvas {
     constructor(props: iCanvasProps) {
         this.el = props.el
 		this.ctx = this.el.getContext(Canvas.context) as CanvasRenderingContext2D
-    
+		this.ctx.translate(0.5, 0.5)
 		this.width = this.el.width
 		this.height = this.el.height
     }

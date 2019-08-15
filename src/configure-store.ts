@@ -1,12 +1,10 @@
-import { createStore, combineReducers } from 'redux'
+import { createStore } from 'redux'
 import { devToolsEnhancer } from 'redux-devtools-extension'
+import { rootReducer } from './root-reducer';
 
-import { transformationsXY } from './transformations-visualization/reducer'
 
 export const store = createStore(
-	combineReducers<{ transformationsXY: any[] }>({
-		transformationsXY,
-	}),
+	rootReducer,
 	{},
 	devToolsEnhancer({})
 )

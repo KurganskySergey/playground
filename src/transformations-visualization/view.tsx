@@ -1,11 +1,15 @@
 import * as React from 'react'
-import { useCanvas, useWindow } from './hooks';
+import { useSelector } from 'react-redux'
+import { useCanvas, useWindow } from './hooks'
 
 import { CoordinatesSystemXY } from '../components/2d-coordinate-system'
 import { drawVector } from '../draw'
 import { rotation } from '../LinearAlgebra'
+import { getAppliedTransformations, getVectors } from './selectors'
 
 export const TransformationVisualization = () => {
+	const transformation = useSelector(getAppliedTransformations)
+	const vectors = useSelector(getVectors)
 	const wSize = useWindow()
 	const canvasRef = useCanvas(
 		() => {

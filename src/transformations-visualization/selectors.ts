@@ -1,3 +1,6 @@
-import { rootReducer } from './../root-reducer';
+import { IRootReducer } from './../root-reducer'
 
-export const getAppliedTransformations = (state: ReturnType<typeof rootReducer> ) => state.transformationsXY
+export const getAppliedTransformations = (state: IRootReducer) =>
+	state.transformationsXY
+
+export const getVectors = (state: IRootReducer) => state.vectors

@@ -1,9 +1,14 @@
 import { combineReducers } from 'redux'
-import { transformationsXY } from './transformations-visualization/reducer'
+import {
+	transformationsXY,
+	vectors,
+} from './transformations-visualization/reducer'
 
-interface IRootReducer {
-    transformationsXY: ReturnType<typeof transformationsXY>
+export interface IRootReducer {
+	transformationsXY: ReturnType<typeof transformationsXY>
+	vectors: ReturnType<typeof vectors>
 }
 export const rootReducer = combineReducers<IRootReducer>({
 	transformationsXY,
+	vectors,
 })

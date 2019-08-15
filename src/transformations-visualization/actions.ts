@@ -12,3 +12,15 @@ export const removeTransformation = createAction<TransformMatrix>(
 export const resetTransformations = createAction(
     'RESET_TRANSFORMATIONS'
 )
+
+export const addVector = createAction(
+    'ADD_VECTOR'
+)
+
+export const removeVector = createAction(
+    'ADD_VECTOR'
+)
+
+export const clearVectors = createAction(
+    'ADD_VECTOR'
+)

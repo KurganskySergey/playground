@@ -1,11 +1,11 @@
 import * as React from 'react'
 import { Provider } from 'react-redux'
 import { store } from './configure-store'
-import { TransformationVisualization } from './transformations-visualization/view'
+import { TransformationVisualizationScreen } from './transformations-visualization/screen'
 
 export const App = (): React.ReactElement => (
 	<Provider store={store}>
-		<TransformationVisualization />
+		<TransformationVisualizationScreen />
 	</Provider>
 )
 

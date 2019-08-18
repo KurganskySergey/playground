@@ -12,7 +12,9 @@ export const rotation = [[0, 1], [-1, 0]]
  * @returns [ ax + by, cx + dy ] || [ ax + by + cz, dx + ey + fz, gx + hy + iz]
  */
 export const applyLinearTransformation = (
-	[[a, c], [b, d]]: TransformMatrix,
+	[
+		[a, c], [b, d]
+	]: TransformMatrix,
 	[x, y]: IVector
 ): IVector => {
 	return [a * x + b * y, c * x + d * y]

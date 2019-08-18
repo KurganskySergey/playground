@@ -1,4 +1,4 @@
-import { DCanvas } from '../components/2d-coordinate-system';
+import { CoordinatesSystemXY } from '../components/2d-coordinate-system';
 import { IVector } from '../LinearAlgebra';
 
 export const drawLine = (
@@ -20,7 +20,7 @@ export const drawLine = (
     ctx.stroke();
 };
 
-export const drawVector = (canvas: DCanvas, vector: IVector, color = 'red') => {
+export const drawVector = (canvas: CoordinatesSystemXY, vector: IVector, color = 'red') => {
     drawLine(
         canvas.ctx,
         canvas.pointsToCoordinates([0, 0]),

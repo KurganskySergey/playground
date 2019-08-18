@@ -55,5 +55,8 @@ export const vectors = handleActions<IVector[], IVector & number>(
 			return []
 		},
 	},
-	[]
+	[
+		[1, 3],
+		[3, -1]
+	]
 )

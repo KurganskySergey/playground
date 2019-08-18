@@ -1,25 +1,36 @@
 import * as React from 'react'
-import { useSelector } from 'react-redux'
 import { useCanvas, useWindow } from './hooks'
 
 import { CoordinatesSystemXY } from '../components/2d-coordinate-system'
 import { drawVector } from '../draw'
-import { rotation } from '../LinearAlgebra'
-import { getAppliedTransformations, getVectors } from './selectors'
+import {
+	IVector,
+	TransformMatrix,
+	applyLinearTransformation,
+} from '../LinearAlgebra'
 
-export const TransformationVisualization = () => {
-	const transformation = useSelector(getAppliedTransformations)
-	const vectors = useSelector(getVectors)
+interface ICanvasProps {
+	vectors: IVector[]
+	transformations: TransformMatrix[]
+}
+
+export const Canvas = ({ vectors, transformations }: ICanvasProps) => {
 	const wSize = useWindow()
+	const transformedVectors = vectors.map(vector => {
+		transformations.reduceRight((transformedVector, transformation) => {
+			return applyLinearTransformation(transformation, transformedVector)
+		}, vector)
+	})
+
 	const canvasRef = useCanvas(
 		() => {
-			const canvas = new Canvas({ el: canvasRef.current })
-			const d = new CoordinatesSystemXY()
-			d.removeAllTransformations()
-			d.addTransformation(transformation)
-			d.drawGrid()
+			const d = new CoordinatesSystemXY({
+				el: canvasRef.current,
+				scale: 40,
+			})
+			d.reset()
 			drawVector(d, [1, 1], 'red')
-			drawVector(d, [2, -1], 'blue')
+			// drawVector(d, [2, -1], 'blue')
 		},
 		'2d',
 		wSize

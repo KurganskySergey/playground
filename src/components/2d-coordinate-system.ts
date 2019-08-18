@@ -1,50 +1,43 @@
 import { drawLine } from '../draw'
+import { Canvas, ICanvasProps } from './canvas'
 import {
-	applyLinearTransformation,
 	areEqualLinearTransformations,
 	IVector,
 	TransformMatrix,
 } from '../LinearAlgebra'
 
-export class CoordinatesSystemXY {
-	public el: HTMLCanvasElement
-	public ctx: CanvasRenderingContext2D
-	private isMouseDown: boolean
-	private startOfCoord: IVector
-	private linearTransformation: TransformMatrix[]
+interface ICoordinatesSystemXYProps extends ICanvasProps {
+	scale: number
+}
+
+export class CoordinatesSystemXY extends Canvas {
+	private originOfCoord: IVector
 
 	// number of pixels should take instead of 1 pixel
-	private scale: number
-	private width: number
-	private height: number
+	private pixelsPerUnit: number
 
-	constructor() {
-		this.linearTransformation = []
+	constructor(props: ICoordinatesSystemXYProps) {
+		super(props)
 		// 10 pixels per 1 unit on coordinate sistem * scale factor
-		this.scale = 10 * scale
-		this.isMouseDown = false
-		this.startOfCoord = [this.width / 2, this.height / 2]
+		this.pixelsPerUnit = props.scale
+		this.originOfCoord = [this.width / 2, this.height / 2]
 	}
 
 	// returns transformed verctor's coordinates over real canvas
-	public pointsToCoordinates(position: IVector): IVector {
-		const [x, y] = this.applyLinearTransformation(position)
+	public pointsToCoordinates([x, y]: IVector): IVector {
+		// const [x, y] = this.applyLinearTransformation(position)
 		return [
-			x * this.scale + this.startOfCoord[0],
+			x * this.pixelsPerUnit + this.originOfCoord[0],
 			// -1 because canvas coordinate goes from top to bottom while 2d in opposite direction
-			-1 * y * this.scale + this.startOfCoord[1],
+			-1 * y * this.pixelsPerUnit + this.originOfCoord[1],
 		]
 	}
 
 	public drawGrid() {
 		this.fillBackground()
 
-		// render each line per 0.5 units on coordinate sistem
-		const xStep = this.scale / 2
-		const yStep = this.scale / 2
-
-		const maxX = Math.ceil(this.startOfCoord[0] / this.scale)
-		const maxY = Math.ceil(this.startOfCoord[1] / this.scale)
+		const maxX = Math.ceil(this.width / this.pixelsPerUnit)
+		const maxY = Math.ceil(this.height / this.pixelsPerUnit)
 
 		this.drawVerticalGridLines(maxX, maxY)
 		this.drawHorizontalGridLines(maxX, maxY)
@@ -62,32 +55,6 @@ export class CoordinatesSystemXY {
 		this.drawGrid()
 	}
 
-	public addTransformation(transformation: TransformMatrix) {
-		if (!this.hasTransformation(transformation)) {
-			this.linearTransformation.push(transformation)
-		}
-	}
-
-	public removeTransformation(transformation: TransformMatrix) {
-		const position = this.linearTransformation.findIndex(
-			(xTramsformation, i, arr) => {
-				return areEqualLinearTransformations(
-					xTramsformation,
-					transformation
-				)
-			}
-		)
-		this.linearTransformation.push(transformation)
-	}
-
-	public removeAllTransformations() {
-		this.linearTransformation = []
-	}
-
-	public hasTransformation(transformation: TransformMatrix): boolean {
-		return this.linearTransformation.indexOf(transformation) >= 0
-	}
-
 	private fillBackground() {
 		const w = this.el.width
 		const h = this.el.height
@@ -100,21 +67,9 @@ export class CoordinatesSystemXY {
 		this.ctx.fill()
 	}
 
-	private applyLinearTransformation(vector: IVector): IVector {
-		return this.linearTransformation.reduceRight(
-			(transformedVector, transformation) => {
-				return applyLinearTransformation(
-					transformation,
-					transformedVector
-				)
-			},
-			vector
-		)
-	}
-
 	private drawHorizontalGridLines(maxX: number, maxY: number): void {
 		// render each line per 0.5 units on coordinate sistem
-		const yStep = this.scale / 2
+		const yStep = this.pixelsPerUnit / 2
 
 		// vertical lines
 		for (let y = 0.5; y < maxY; y += 0.5) {
@@ -143,7 +98,7 @@ export class CoordinatesSystemXY {
 
 	private drawVerticalGridLines(maxX: number, maxY: number): void {
 		// render each line per 0.5 units on coordinate sistem
-		const xStep = this.scale / 2
+		const xStep = this.pixelsPerUnit / 2
 
 		// vertical lines
 		for (let x = 0.5; x < maxX; x += 0.5) {
